@@ -140,6 +140,61 @@ _ocr_engines: dict[str, object] = {}
 _structure_engines: dict[str, object] = {}
 
 
+def _paddle_python() -> str:
+	"""Interpreter that can import paddlepaddle. Empty when this process can."""
+	explicit = os.environ.get("IDP_OCR_PYTHON", "").strip()
+	if explicit and os.path.isfile(explicit):
+		return explicit
+	default = "/home/erpnext/ocr-venv/bin/python"
+	return default if os.path.isfile(default) else ""
+
+
+class _TextEngine:
+	"""Call the paddle interpreter. ``ocr`` matches the method extract_text uses."""
+
+	def __init__(self, python: str, lang: str):
+		self.python = python
+		self.lang = lang
+
+	def ocr(self, file_path: str, cls: bool = True):
+		import json
+		import fcntl
+
+		worker = os.path.join(os.path.dirname(__file__), "paddle_worker.py")
+		lock_path = os.path.join(os.path.dirname(self.python), "ocr.lock")
+		lock = open(lock_path, "a")
+		try:
+			fcntl.flock(lock, fcntl.LOCK_EX)
+			proc = self._run(worker, file_path)
+		finally:
+			fcntl.flock(lock, fcntl.LOCK_UN)
+			lock.close()
+		if proc.returncode != 0:
+			detail = (proc.stderr or proc.stdout or "OCR worker failed").strip()
+			raise OCRError(detail[-800:])
+		return json.loads(proc.stdout or "[]")
+
+	def _run(self, worker: str, file_path: str):
+		import subprocess
+
+		return subprocess.run(
+			[self.python, worker, "text", self.lang, file_path],
+			capture_output=True,
+			text=True,
+			timeout=240,
+			check=False,
+			env={
+				**os.environ,
+				"FLAGS_use_mkldnn": "0",
+				"FLAGS_use_onednn": "0",
+				"PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT": "0",
+				"PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK": "True",
+				"PADDLE_PDX_CPU_NUM_THREADS": "2",
+				"OMP_NUM_THREADS": "2",
+			},
+		)
+
+
 def get_ocr_engine(lang: str = "en"):
 	"""Get or create a PaddleOCR instance for *lang*.
 
@@ -148,6 +203,10 @@ def get_ocr_engine(lang: str = "en"):
 	"""
 	global _ocr_engines
 	if lang not in _ocr_engines:
+		worker = _paddle_python()
+		if worker:
+			_ocr_engines[lang] = _TextEngine(worker, lang)
+			return _ocr_engines[lang]
 		try:
 			from paddleocr import PaddleOCR
 		except ImportError:
@@ -173,6 +232,13 @@ def get_ocr_engine(lang: str = "en"):
 	return _ocr_engines[lang]
 
 
+class _NoTables:
+	"""Table models stay off the web process. Text OCR still runs."""
+
+	def __call__(self, file_path: str):
+		return []
+
+
 def get_structure_engine(lang: str = "en"):
 	"""Get or create a PPStructureV3 instance for table / layout extraction.
 
@@ -181,6 +247,9 @@ def get_structure_engine(lang: str = "en"):
 	"""
 	global _structure_engines
 	if lang not in _structure_engines:
+		if _paddle_python():
+			_structure_engines[lang] = _NoTables()
+			return _structure_engines[lang]
 		try:
 			from paddleocr import PPStructureV3
 		except ImportError:

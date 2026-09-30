@@ -117,7 +117,9 @@ def extract_document(
 
 		# 2. Map to target DocType schema
 		mapper = FieldMapper()
-		mapped: MappedDocument = mapper.map_fields(extraction, target_doctype, company=company)
+		mapped: MappedDocument = mapper.map_fields(
+			extraction, target_doctype, company=company, source_lang=language
+		)
 
 		# 3. Validate — gated by IDP Settings.enable_pre_validation so users
 		# can short-circuit schema checks before the LLM stage.

@@ -379,6 +379,7 @@ const emit = defineEmits(["confirmed", "focus-source"]);
 const store = useConversationStore();
 const { confirm, busy: agentBusy } = useAgent();
 const { settings } = useSettings();
+const clerkSurface = computed(() => !!settings.value?.clerk_mode);
 
 // Phase 31 G16 — gate the per-field re-extract button.
 const reExtractEnabled = computed(() => {
@@ -421,6 +422,7 @@ const turnCardSiblings = computed(() => {
 });
 
 const showBulkHeader = computed(() => {
+	if (clerkSurface.value) return false;
 	if (!reExtractEnabled.value) return false;
 	if (!turnCardSiblings.value.length) return false;
 	if (turnCardSiblings.value.length < 3) return false;
@@ -566,16 +568,25 @@ const warningList = computed(() => {
 });
 
 const actions = computed(() => {
-	// The server is authoritative for the action set.  When the card has
-	// been confirmed (submit / save_draft) the server stores
-	// ``actions: []`` to lock the card read-only — never inject a default
-	// four-button set here or the card will re-render as actionable and
-	// appear as a duplicate confirmation prompt (Phase 24 fix).
 	const a = card.value.actions;
-	if (Array.isArray(a)) {
-		return a.filter((x) => x && x.id);
+	if (!Array.isArray(a)) {
+		return [];
 	}
-	return [];
+	let list = a.filter((x) => x && x.id);
+	if (clerkSurface.value) {
+		list = list
+			.filter((x) => x.id !== "submit")
+			.map((x) => {
+				if (x.id === "save_draft") {
+					return { ...x, label: "Create draft invoice", primary: true };
+				}
+				if (x.id === "cancel") {
+					return { ...x, label: "Discard" };
+				}
+				return x;
+			});
+	}
+	return list;
 });
 
 const editing = ref(false);

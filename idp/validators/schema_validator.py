@@ -52,6 +52,34 @@ class ValidationResult:
 # ---------------------------------------------------------------------------
 
 
+def child_tables_for_rows(child_tables: dict, rows: list) -> list[tuple[str, dict]]:
+	"""The child table these rows belong to.
+
+	A Sales Invoice row is an item. The same list must not be checked as a
+	tax row, a payment row, and a sales-team row.
+	"""
+	keys: set[str] = set()
+	for row in rows or []:
+		if isinstance(row, dict):
+			keys.update(str(key) for key in row.keys())
+	if not keys or not child_tables:
+		return []
+	scored: list[tuple[int, str, dict]] = []
+	for name, info in child_tables.items():
+		fields = {
+			field.get("fieldname")
+			for field in (info or {}).get("fields") or []
+			if isinstance(field, dict) and field.get("fieldname")
+		}
+		overlap = len(keys & fields)
+		if overlap:
+			scored.append((overlap, str(name), info or {}))
+	if not scored:
+		return []
+	best = max(score for score, _name, _info in scored)
+	return [(name, info) for score, name, info in scored if score == best]
+
+
 def validate_schema(mapped_data: MappedDocument, company: str = "") -> ValidationResult:
 	"""Validate *mapped_data* against the DocType field schema.
 
@@ -73,8 +101,12 @@ def validate_schema(mapped_data: MappedDocument, company: str = "") -> Validatio
 	_check_data_lengths(mapped_data.header, schema["fields"], result)
 	_check_links(mapped_data.header, schema["fields"], company, result)
 
-	# --- Child table checks ---
-	for _table_fieldname, table_info in schema.get("child_tables", {}).items():
+	# Mapped rows belong to one child table. Callers of validate_schema:
+	# idp/api/extract.py, idp/mappers/document_creator.py, taxmate/api/idp_desk.py.
+	# No other helper picks the table. Rows are {item_code, qty, rate, amount}.
+	for _table_fieldname, table_info in child_tables_for_rows(
+		schema.get("child_tables") or {}, mapped_data.items
+	):
 		child_fields = table_info.get("fields", [])
 		for idx, row in enumerate(mapped_data.items):
 			row_label = f"Row {idx + 1}"

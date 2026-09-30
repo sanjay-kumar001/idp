@@ -128,36 +128,39 @@ class PDFExtractor(BaseExtractor):
 
 		if is_scanned:
 			logger.info(f"PDF appears scanned, falling back to OCR | file={file_url}")
-			from idp.ocr.engine import process_pdf
-
-			ocr_results = process_pdf(file_path, lang=lang)
-			# Rebuild text from OCR results
-			text_parts: list[str] = []
-			all_tables: list[list[list[str]]] = []
-			confidences: list[float] = []
-
-			for page in ocr_results:
-				page_text = "\n".join(b.text for b in page.text_blocks)
-				text_parts.append(page_text)
-				for tbl in page.tables:
-					all_tables.append(tbl.rows)
-				if page.text_blocks:
-					confidences.append(page.average_confidence)
-
-			text = "\n\n".join(text_parts)
-			tables = all_tables
-			confidence = sum(confidences) / len(confidences) if confidences else None
-		else:
-			# Text-based PDF — still try table extraction via OCR
 			try:
 				from idp.ocr.engine import process_pdf
 
 				ocr_results = process_pdf(file_path, lang=lang)
-				for page in ocr_results:
-					for tbl in page.tables:
-						tables.append(tbl.rows)
 			except Exception:
-				logger.warning(f"Table extraction failed for text-based PDF: {file_url}")
+				logger.warning(f"OCR failed for a sparse PDF, keeping the text layer | file={file_url}")
+				if not (text or "").strip():
+					raise
+			else:
+				# Rebuild text from OCR results. A blank OCR pass must not
+				# wipe a text layer the PDF already had.
+				text_parts: list[str] = []
+				all_tables: list[list[list[str]]] = []
+				confidences: list[float] = []
+
+				for page in ocr_results:
+					page_text = "\n".join(b.text for b in page.text_blocks)
+					text_parts.append(page_text)
+					for tbl in page.tables:
+						all_tables.append(tbl.rows)
+					if page.text_blocks:
+						confidences.append(page.average_confidence)
+
+				ocr_text = "\n\n".join(text_parts).strip()
+				if ocr_text or not (text or "").strip():
+					text = "\n\n".join(text_parts)
+					tables = all_tables
+					confidence = sum(confidences) / len(confidences) if confidences else None
+		else:
+			# The page already has a text layer. Rendering it and running
+			# Paddle just to look for tables reloads the model and holds the
+			# request past the web timeout. The text layer is the read.
+			pass
 
 		return ExtractionResult(
 			content_type="mixed" if tables else "text",

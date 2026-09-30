@@ -664,11 +664,21 @@ class FieldMapper:
 		"""Find the best matching fieldname for a label-value pair."""
 		label_lower = label.lower().strip()
 
-		# 1. Exact keyword match
+		# Longest keyword wins. Callers: FieldMapper.map_fields, then
+		# idp.api.extract.extract_document and idp.api.llm.hybrid_map.
+		# A short alias such as French "date" must not take "Due Date".
+		best_field = None
+		best_len = -1
 		for fieldname, kw_list in keywords.items():
 			for kw in kw_list:
+				if not kw:
+					continue
 				if kw == label_lower or kw in label_lower:
-					return fieldname
+					if len(kw) > best_len:
+						best_field = fieldname
+						best_len = len(kw)
+		if best_field:
+			return best_field
 
 		# 2. Check field alias table
 		for alias, target in FIELD_ALIASES.items():

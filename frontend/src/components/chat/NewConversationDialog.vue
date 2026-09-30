@@ -14,7 +14,7 @@
         New conversation
       </div>
       <div
-        v-if="missingFields.length"
+        v-if="missingFields.length && !clerkMode"
         class="mb-3 rounded border border-amber-300 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200"
       >
         Please pick a value for: {{ missingFields.join(', ') }}.
@@ -34,6 +34,14 @@
           />
         </label>
 
+        <p
+          v-if="clerkMode"
+          class="rounded border border-amber-300 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800"
+        >
+          Ask an administrator to finish Invoice OCR setup in IDP Settings.
+        </p>
+
+        <div v-if="!clerkMode" class="space-y-3">
         <label class="block">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-300">
             Target DocType (optional)
@@ -106,6 +114,7 @@
             />
           </label>
         </div>
+        </div>
 
         <div v-if="lastError" class="text-xs text-red-700">{{ lastError }}</div>
 
@@ -134,6 +143,10 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useConversation } from '@/composables/useConversation'
 import { listLLMProviders } from '@/utils/api'
+import { useSettings } from '@/composables/useSettings'
+
+const { settings } = useSettings()
+const clerkMode = computed(() => !!settings.value?.clerk_mode)
 
 const props = defineProps({
   open: { type: Boolean, default: false },

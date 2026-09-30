@@ -70,6 +70,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import frappe
+
 from idp.llm.schemas import CONFIRMATION_CARD_PAYLOAD_VERSION
 from idp.tools.base import ToolContext, ToolResult, publish_progress, tool
 
@@ -1070,22 +1072,38 @@ def _default_summary(
 	if total_bits:
 		bullets.append(" | ".join(total_bits))
 
+	taxmate = "taxmate" in frappe.get_installed_apps()
 	# Blockers / warnings the user should notice.
 	if missing_masters:
-		bullets.append(
-			f"{len(missing_masters)} missing master(s) need approval before submit."
-		)
+		if taxmate:
+			bullets.append(
+				f"{len(missing_masters)} line(s) need an existing Item before the draft can be created."
+			)
+		else:
+			bullets.append(
+				f"{len(missing_masters)} missing master(s) need approval before submit."
+			)
 	if schema_errors:
 		bullets.append(f"{len(schema_errors)} schema error(s) must be fixed.")
 	elif business_rule_warnings:
 		bullets.append(f"{len(business_rule_warnings)} validation warning(s) to review.")
 
-	bullets.append("Review the card below and click Submit to create the record.")
+	if taxmate:
+		bullets.append("Review the card below and create a draft Purchase Invoice.")
+	else:
+		bullets.append("Review the card below and click Submit to create the record.")
 
 	return headline + "\n\n" + "\n".join(f"- {b}" for b in bullets)
 
 
 def _default_actions(missing_masters: list[dict], schema_errors: list[str]) -> list[dict]:
+	# TaxMate clerks only save drafts; Submit stays on the Purchase Invoice form.
+	if "taxmate" in frappe.get_installed_apps():
+		return [
+			{"id": "save_draft", "label": "Create draft invoice", "primary": True, "disabled": False},
+			{"id": "edit", "label": "Edit", "primary": False, "disabled": False},
+			{"id": "cancel", "label": "Discard", "primary": False, "disabled": False},
+		]
 	# Submit is disabled (advisory only — UI enforces) when blockers exist.
 	blocked = bool(missing_masters) or bool(schema_errors)
 	return [

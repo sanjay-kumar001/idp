@@ -343,11 +343,27 @@ class HybridFieldMapper:
 				merged.header[fieldname] = value
 				merged.confidence_scores[fieldname] = {"score": llm_score, "source": "llm"}
 
-		# Items: trust the LLM only when the rule mapper produced none —
-		# table extraction is hard to merge generically and the rule path
-		# is much more reliable when it works.
+		# Items: trust the LLM only when the rule mapper produced none.
+		# When the rules already found the row, keep that row and copy
+		# the code and unit the rules missed.
 		if not merged.items and llm_items:
 			merged.items = list(llm_items)
+		elif merged.items and llm_items:
+			by_name = {
+				str(row.get("item_name") or row.get("item_code") or "").strip().lower(): row
+				for row in llm_items
+				if isinstance(row, dict)
+			}
+			for rule_row in merged.items:
+				if not isinstance(rule_row, dict):
+					continue
+				label = str(rule_row.get("item_name") or "").strip().lower()
+				llm_row = by_name.get(label)
+				if not llm_row:
+					continue
+				for key in ("item_code", "uom"):
+					if not rule_row.get(key) and llm_row.get(key):
+						rule_row[key] = llm_row[key]
 
 		for w in llm_warnings:
 			if isinstance(w, str):
