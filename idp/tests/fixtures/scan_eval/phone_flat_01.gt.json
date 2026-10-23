@@ -1,0 +1,18 @@
+{
+  "id": "phone_flat_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "QUICK PRINT DUBAI",
+    "supplier_trn": "100333344445555",
+    "bill_no": "QP-118",
+    "bill_date": "2026-05-02",
+    "currency": "AED",
+    "net_total": 45.0,
+    "tax_total": 2.25,
+    "grand_total": 47.25
+  },
+  "ocr_text": "TAX INVOICE\nQUICK PRINT DUBAI\nTRN: 100333344445555\nInvoice No: QP-118\nDate: 2026-05-02\nCurrency: AED\nNet: 45.00\nVAT 5%: 2.25\nGrand Total: 47.25\nItem: Services / Goods  Qty:1",
+  "file": "phone_flat_01.png"
+}

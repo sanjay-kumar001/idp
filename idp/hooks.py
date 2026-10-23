@@ -134,10 +134,13 @@ permission_query_conditions = {
 	"IDP Conversation": "idp.idp.doctype.idp_conversation.idp_conversation.get_permission_query_conditions",
 	"IDP Message": "idp.idp.doctype.idp_message.idp_message.get_permission_query_conditions",
 	"IDP Batch Job": "idp.idp.doctype.idp_batch_job.idp_batch_job.get_permission_query_conditions",
+	"IDP Document Log": "idp.idp.doctype.idp_document_log.idp_document_log.get_permission_query_conditions",
 }
 
 has_permission = {
 	"IDP Conversation": "idp.api.permissions.has_conversation_permission",
+	"IDP Message": "idp.api.permissions.has_message_permission",
+	"IDP Document Log": "idp.api.permissions.has_document_log_permission",
 }
 
 # Document Events
@@ -153,10 +156,22 @@ doc_events = {
 	},
 }
 
+# Scan extension points (other apps append handlers)
+# idp_after_extract(doc) — after frozen read; failures are logged, read still succeeds
+# idp_before_make_draft(doc) — before target insert; failures block draft
+idp_after_extract = []
+idp_before_make_draft = []
+
 # Scheduled Tasks
+
 # ---------------
 
 scheduler_events = {
+	"cron": {
+		"*/5 * * * *": [
+			"idp.scan.watchdog.fail_stale_reading_scans",
+		],
+	},
 	"daily": [
 		"idp.core.retention.daily",
 	],

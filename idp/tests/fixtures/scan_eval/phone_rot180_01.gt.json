@@ -1,0 +1,18 @@
+{
+  "id": "phone_rot180_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "SAFE STORAGE LLC",
+    "supplier_trn": "100777788889999",
+    "bill_no": "SS-221",
+    "bill_date": "2026-02-18",
+    "currency": "AED",
+    "net_total": 150.0,
+    "tax_total": 7.5,
+    "grand_total": 157.5
+  },
+  "ocr_text": "TAX INVOICE\nSAFE STORAGE LLC\nTRN: 100777788889999\nInvoice No: SS-221\nDate: 2026-02-18\nCurrency: AED\nNet: 150.00\nVAT 5%: 7.50\nGrand Total: 157.50\nItem: Services / Goods  Qty:1",
+  "file": "phone_rot180_01.png"
+}

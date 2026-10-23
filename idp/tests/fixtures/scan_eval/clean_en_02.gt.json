@@ -1,0 +1,18 @@
+{
+  "id": "clean_en_02",
+  "category": "clean",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "DESERT PARTS TRADING",
+    "supplier_trn": "100987654321098",
+    "bill_no": "PI-77821",
+    "bill_date": "2026-01-08",
+    "currency": "AED",
+    "net_total": 250.0,
+    "tax_total": 12.5,
+    "grand_total": 262.5
+  },
+  "ocr_text": "TAX INVOICE\nDESERT PARTS TRADING\nTRN: 100987654321098\nInvoice No: PI-77821\nDate: 2026-01-08\nCurrency: AED\nNet: 250.00\nVAT 5%: 12.50\nGrand Total: 262.50\nItem: Services / Goods  Qty:1",
+  "file": "clean_en_02.png"
+}

@@ -75,13 +75,9 @@ class SubprocessResult:
 
 
 def should_use_subprocess(file_path: str) -> bool:
-	"""Heuristic: bypass the subprocess for very small files."""
-
-	try:
-		return os.path.getsize(file_path) > INLINE_SIZE_THRESHOLD
-	except OSError:
-		# If we cannot stat the file, prefer the safer subprocess path.
-		return True
+	"""Always isolate PaddleOCR in a child process."""
+	_ = (file_path, INLINE_SIZE_THRESHOLD)
+	return True
 
 
 def run_in_subprocess(

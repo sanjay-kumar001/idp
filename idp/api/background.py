@@ -179,36 +179,30 @@ def _run_extraction_job(
 
 @frappe.whitelist()
 def get_job_status(job_id: str) -> dict:
-	"""Return the current status of an enqueued extraction job."""
+	"""Return the current status of an enqueued extraction job.
+
+	Requires read permission on the *IDP Document Log* row. Prefer
+	``idp.api.scan.get_scan`` once that module ships (PR3).
+	"""
 	if not job_id:
 		frappe.throw("job_id is required.", frappe.ValidationError)
 
 	try:
-		row = frappe.db.get_value(
-			"IDP Document Log",
-			job_id,
-			[
-				"name", "status", "processing_time_ms", "ocr_confidence",
-				"error_message", "created_doctype", "created_document", "modified",
-			],
-			as_dict=True,
-		)
-	except Exception as exc:
-		logger.warning("get_job_status failed for %s: %s", job_id, exc)
-		row = None
-
-	if not row:
+		doc = frappe.get_doc("IDP Document Log", job_id)
+	except frappe.DoesNotExistError:
 		return {"job_id": job_id, "status": "unknown"}
 
+	doc.check_permission("read")
+
 	return {
-		"job_id": row["name"],
-		"status": row["status"],
-		"processing_time_ms": row["processing_time_ms"],
-		"ocr_confidence": row["ocr_confidence"],
-		"error_message": row["error_message"],
-		"created_doctype": row["created_doctype"],
-		"created_document": row["created_document"],
-		"updated_on": str(row["modified"]) if row.get("modified") else None,
+		"job_id": doc.name,
+		"status": doc.status,
+		"processing_time_ms": doc.processing_time_ms,
+		"ocr_confidence": doc.ocr_confidence,
+		"error_message": doc.error_message,
+		"created_doctype": doc.created_doctype,
+		"created_document": doc.created_document,
+		"updated_on": str(doc.modified) if doc.modified else None,
 	}
 
 

@@ -1,0 +1,18 @@
+{
+  "id": "bilingual_01",
+  "category": "bilingual",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "AL MANARA LLC / المنارة ذ.م.م",
+    "supplier_trn": "100121212121212",
+    "bill_no": "AM-3001",
+    "bill_date": "2026-03-03",
+    "currency": "AED",
+    "net_total": 1100.0,
+    "tax_total": 55.0,
+    "grand_total": 1155.0
+  },
+  "ocr_text": "TAX INVOICE\nAL MANARA LLC / المنارة ذ.م.م\nTRN: 100121212121212\nInvoice No: AM-3001\nDate: 2026-03-03\nCurrency: AED\nNet: 1100.00\nVAT 5%: 55.00\nGrand Total: 1155.00\nItem: Services / Goods  Qty:1",
+  "file": "bilingual_01.png"
+}

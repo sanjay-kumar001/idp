@@ -170,6 +170,9 @@ def extract_content(file_url: str, lang: str = "en") -> ExtractionResult:
 	(LLaVA / minicpm-v fallback), or ``auto`` which tries Paddle first
 	and retries with Ollama on :class:`OCRError`.
 	"""
+	from idp.ocr.call_counter import bump as _ocr_bump
+
+	_ocr_bump(1)
 	abs_path, mime_type = resolve_file(file_url)
 
 	# Phase 27: honour the configured OCR engine preference for the

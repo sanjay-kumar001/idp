@@ -1,0 +1,18 @@
+{
+  "id": "thermal_01",
+  "category": "thermal",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "CORNER SHOP DXB",
+    "supplier_trn": "100565656565656",
+    "bill_no": "RCPT-8891",
+    "bill_date": "2026-06-10",
+    "currency": "AED",
+    "net_total": 18.0,
+    "tax_total": 0.9,
+    "grand_total": 18.9
+  },
+  "ocr_text": "TAX INVOICE\nCORNER SHOP DXB\nTRN: 100565656565656\nInvoice No: RCPT-8891\nDate: 2026-06-10\nCurrency: AED\nNet: 18.00\nVAT 5%: 0.90\nGrand Total: 18.90\nItem: Services / Goods  Qty:1",
+  "file": "thermal_01.png"
+}

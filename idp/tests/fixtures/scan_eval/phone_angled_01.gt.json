@@ -1,0 +1,18 @@
+{
+  "id": "phone_angled_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "CITY CAFE SUPPLIES",
+    "supplier_trn": "100444455556666",
+    "bill_no": "CC-5520",
+    "bill_date": "2026-03-22",
+    "currency": "AED",
+    "net_total": 320.0,
+    "tax_total": 16.0,
+    "grand_total": 336.0
+  },
+  "ocr_text": "TAX INVOICE\nCITY CAFE SUPPLIES\nTRN: 100444455556666\nInvoice No: CC-5520\nDate: 2026-03-22\nCurrency: AED\nNet: 320.00\nVAT 5%: 16.00\nGrand Total: 336.00\nItem: Services / Goods  Qty:1",
+  "file": "phone_angled_01.png"
+}

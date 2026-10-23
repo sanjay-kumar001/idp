@@ -1,0 +1,18 @@
+{
+  "id": "phone_rot90_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "METRO LOGISTICS FZE",
+    "supplier_trn": "100666677778888",
+    "bill_no": "ML-770",
+    "bill_date": "2026-06-01",
+    "currency": "AED",
+    "net_total": 900.0,
+    "tax_total": 45.0,
+    "grand_total": 945.0
+  },
+  "ocr_text": "TAX INVOICE\nMETRO LOGISTICS FZE\nTRN: 100666677778888\nInvoice No: ML-770\nDate: 2026-06-01\nCurrency: AED\nNet: 900.00\nVAT 5%: 45.00\nGrand Total: 945.00\nItem: Services / Goods  Qty:1",
+  "file": "phone_rot90_01.png"
+}

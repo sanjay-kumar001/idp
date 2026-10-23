@@ -1,0 +1,18 @@
+{
+  "id": "zero_vat_01",
+  "category": "clean",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "EXPORT FREIGHT UAE",
+    "supplier_trn": "100787878787878",
+    "bill_no": "EF-600",
+    "bill_date": "2026-02-28",
+    "currency": "AED",
+    "net_total": 400.0,
+    "tax_total": 0.0,
+    "grand_total": 400.0
+  },
+  "ocr_text": "TAX INVOICE\nEXPORT FREIGHT UAE\nTRN: 100787878787878\nInvoice No: EF-600\nDate: 2026-02-28\nCurrency: AED\nNet: 400.00\nVAT: 0.00 (zero-rated)\nGrand Total: 400.00\nItem: Services / Goods  Qty:1",
+  "file": "zero_vat_01.png"
+}

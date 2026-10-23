@@ -211,12 +211,14 @@ def _resolve_language_settings(
 	auto_detect = bool(int(settings.get("enable_language_auto_detect") or 1))
 	if resolved_source.lower() == "auto" and auto_detect and file_url:
 		try:
-			from idp.ocr.engine import detect_language
+			from idp.ocr.engine import detect_language_isolated
 
-			# detect_language expects a real path; ``extract_from_file``
+			# detect_language_isolated expects a real path; ``extract_from_file``
 			# does the same kind of resolution.  We pass the URL through
 			# unchanged — the OCR layer accepts both file_url and path.
-			resolved_source = detect_language(file_url) or "en"
+			# Isolated (subprocess + timeout) so a stalled model
+			# download/init can't hang this request indefinitely.
+			resolved_source = detect_language_isolated(file_url) or "en"
 		except Exception as exc:
 			logger.debug(f"hybrid_map language auto-detect failed ({exc}); falling back to 'en'")
 			resolved_source = "en"
@@ -235,12 +237,12 @@ def detect_file_language(file_url: str) -> dict:
 	is therefore advisory only.
 	"""
 
-	from idp.ocr.engine import detect_language
+	from idp.ocr.engine import detect_language_isolated
 
 	if not file_url:
 		frappe.throw("file_url is required")
 	try:
-		lang = detect_language(file_url) or "en"
+		lang = detect_language_isolated(file_url) or "en"
 	except Exception as exc:
 		logger.debug(f"detect_file_language failed ({exc}); returning 'en'")
 		lang = "en"

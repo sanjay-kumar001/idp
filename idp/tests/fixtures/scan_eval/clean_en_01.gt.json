@@ -1,0 +1,18 @@
+{
+  "id": "clean_en_01",
+  "category": "clean",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "TAX SUPPLIES LLC",
+    "supplier_trn": "100123456789012",
+    "bill_no": "INV-2026-001",
+    "bill_date": "2026-03-15",
+    "currency": "AED",
+    "net_total": 1000.0,
+    "tax_total": 50.0,
+    "grand_total": 1050.0
+  },
+  "ocr_text": "TAX INVOICE\nTAX SUPPLIES LLC\nTRN: 100123456789012\nInvoice No: INV-2026-001\nDate: 2026-03-15\nCurrency: AED\nNet: 1000.00\nVAT 5%: 50.00\nGrand Total: 1050.00\nItem: Services / Goods  Qty:1",
+  "file": "clean_en_01.png"
+}

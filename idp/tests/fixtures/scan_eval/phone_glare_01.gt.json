@@ -1,0 +1,18 @@
+{
+  "id": "phone_glare_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "SUNTECH TRADING",
+    "supplier_trn": "100999900001111",
+    "bill_no": "ST-404",
+    "bill_date": "2026-04-04",
+    "currency": "AED",
+    "net_total": 640.0,
+    "tax_total": 32.0,
+    "grand_total": 672.0
+  },
+  "ocr_text": "TAX INVOICE\nSUNTECH TRADING\nTRN: 100999900001111\nInvoice No: ST-404\nDate: 2026-04-04\nCurrency: AED\nNet: 640.00\nVAT 5%: 32.00\nGrand Total: 672.00\nItem: Services / Goods  Qty:1",
+  "file": "phone_glare_01.png"
+}

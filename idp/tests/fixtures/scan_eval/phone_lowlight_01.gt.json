@@ -1,0 +1,18 @@
+{
+  "id": "phone_lowlight_01",
+  "category": "phone",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "NIGHT SHIFT PARTS",
+    "supplier_trn": "100888899990000",
+    "bill_no": "NSP-09",
+    "bill_date": "2026-01-30",
+    "currency": "AED",
+    "net_total": 75.0,
+    "tax_total": 3.75,
+    "grand_total": 78.75
+  },
+  "ocr_text": "TAX INVOICE\nNIGHT SHIFT PARTS\nTRN: 100888899990000\nInvoice No: NSP-09\nDate: 2026-01-30\nCurrency: AED\nNet: 75.00\nVAT 5%: 3.75\nGrand Total: 78.75\nItem: Services / Goods  Qty:1",
+  "file": "phone_lowlight_01.png"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "clean_en_03",
+  "category": "clean",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "GULF OFFICE MART",
+    "supplier_trn": "100111122223333",
+    "bill_no": "GOM-4401",
+    "bill_date": "2025-12-20",
+    "currency": "AED",
+    "net_total": 80.0,
+    "tax_total": 4.0,
+    "grand_total": 84.0
+  },
+  "ocr_text": "TAX INVOICE\nGULF OFFICE MART\nTRN: 100111122223333\nInvoice No: GOM-4401\nDate: 2025-12-20\nCurrency: AED\nNet: 80.00\nVAT 5%: 4.00\nGrand Total: 84.00\nItem: Services / Goods  Qty:1",
+  "file": "clean_en_03.png"
+}

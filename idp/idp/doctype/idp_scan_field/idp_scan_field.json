@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "creation": "2026-10-17 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fieldname",
+  "extracted",
+  "edited",
+  "confidence",
+  "flags",
+  "source_box"
+ ],
+ "fields": [
+  {
+   "fieldname": "fieldname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Fieldname",
+   "reqd": 1
+  },
+  {
+   "fieldname": "extracted",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Extracted"
+  },
+  {
+   "fieldname": "edited",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Edited"
+  },
+  {
+   "fieldname": "confidence",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Confidence",
+   "precision": "3"
+  },
+  {
+   "fieldname": "flags",
+   "fieldtype": "Small Text",
+   "label": "Flags"
+  },
+  {
+   "fieldname": "source_box",
+   "fieldtype": "Small Text",
+   "label": "Source Box"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-17 00:00:00",
+ "modified_by": "Administrator",
+ "module": "IDP",
+ "name": "IDP Scan Field",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

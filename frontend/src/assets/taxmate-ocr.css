@@ -1,0 +1,197 @@
+/* TaxMate Invoice OCR chat — scoped to .tm-ocr. Matches Desk teal/ink/gold. */
+
+.tm-ocr {
+	--tm-ink: #0b3d39;
+	--tm-teal: #12715b;
+	--tm-teal-hover: #0e5c4a;
+	--tm-gold: #b08d57;
+	--tm-paper: #f6f3ec;
+	--tm-line: #e4ddd0;
+	--tm-muted: #6b7280;
+	background: var(--tm-paper);
+	color: var(--tm-ink);
+	font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.tm-ocr .idp-sidebar {
+	background: #fff;
+	border-right: 1px solid var(--tm-line);
+}
+
+.tm-ocr-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.tm-ocr-mark {
+	flex: 0 0 auto;
+	width: 28px;
+	height: 28px;
+	object-fit: contain;
+}
+
+.tm-ocr-title {
+	font-size: 14px;
+	font-weight: 650;
+	letter-spacing: -0.01em;
+	color: var(--tm-ink);
+	line-height: 1.2;
+}
+
+.tm-ocr-sub {
+	font-size: 11px;
+	color: var(--tm-muted);
+	line-height: 1.2;
+}
+
+.tm-ocr-scan {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--tm-teal);
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	padding: 9px 12px;
+	box-shadow: none;
+}
+
+.tm-ocr-scan:hover {
+	background: var(--tm-teal-hover);
+}
+
+.tm-ocr-scan:disabled {
+	opacity: 0.55;
+}
+
+.tm-ocr-desk {
+	display: block;
+	padding: 10px 12px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--tm-teal);
+	text-decoration: none;
+	border-top: 1px solid var(--tm-line);
+}
+
+.tm-ocr-desk:hover {
+	color: var(--tm-teal-hover);
+}
+
+.tm-ocr .idp-messages {
+	background: var(--tm-paper);
+}
+
+.tm-ocr-empty {
+	margin: 48px auto 0;
+	max-width: 28rem;
+	border: 1px dashed #cfc6b6;
+	border-radius: 12px;
+	background: #fff;
+	padding: 28px 24px 24px;
+	text-align: center;
+}
+
+.tm-ocr-empty h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 650;
+	letter-spacing: -0.02em;
+	color: var(--tm-ink);
+}
+
+.tm-ocr-empty p {
+	margin: 8px 0 0;
+	font-size: 13px;
+	line-height: 1.45;
+	color: var(--tm-muted);
+}
+
+.tm-ocr-empty-icon {
+	margin: 0 auto 14px;
+	display: flex;
+	height: 48px;
+	width: 48px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	background: rgba(18, 113, 91, 0.1);
+	color: var(--tm-teal);
+}
+
+.tm-ocr-chip {
+	margin-top: 16px;
+	border: 1px solid var(--tm-line);
+	border-radius: 999px;
+	background: var(--tm-paper);
+	padding: 6px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--tm-ink);
+}
+
+.tm-ocr-chip:hover {
+	border-color: var(--tm-teal);
+	color: var(--tm-teal);
+}
+
+.tm-ocr-welcome {
+	max-width: 26rem;
+	text-align: center;
+}
+
+.tm-ocr-welcome h1 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 650;
+	letter-spacing: -0.03em;
+	color: var(--tm-ink);
+}
+
+.tm-ocr-welcome p {
+	margin: 8px 0 0;
+	font-size: 14px;
+	color: var(--tm-muted);
+}
+
+.tm-ocr-composer {
+	border-top: 1px solid var(--tm-line);
+	background: #fff;
+}
+
+.tm-ocr-composer textarea {
+	border-color: var(--tm-line);
+	min-height: 44px;
+}
+
+.tm-ocr-composer textarea:focus {
+	border-color: var(--tm-teal);
+	box-shadow: 0 0 0 3px rgba(18, 113, 91, 0.15);
+	outline: none;
+}
+
+.tm-ocr-extract {
+	background: var(--tm-teal) !important;
+}
+
+.tm-ocr-extract:hover {
+	background: var(--tm-teal-hover) !important;
+}
+
+.tm-ocr-hint {
+	color: var(--tm-muted);
+}
+
+.tm-ocr-session.is-active {
+	background: rgba(18, 113, 91, 0.1);
+}
+
+.tm-ocr-session:hover {
+	background: rgba(18, 113, 91, 0.06);
+}

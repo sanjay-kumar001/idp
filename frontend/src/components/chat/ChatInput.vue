@@ -4,7 +4,12 @@
 <template>
   <form
     class="relative border-t border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
-    :class="{ 'ring-2 ring-blue-400 ring-inset': dragOver }"
+    :class="{
+      'tm-ocr-composer': clerkMode,
+      'ring-2 ring-inset': dragOver,
+      'ring-[#12715B]': dragOver && clerkMode,
+      'ring-blue-400': dragOver && !clerkMode,
+    }"
     @submit.prevent="onSubmit"
     @dragenter.prevent="onDragEnter"
     @dragover.prevent="onDragOver"
@@ -75,8 +80,9 @@
         type="submit"
         :disabled="!canSubmit"
         class="h-9 rounded bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        :class="{ 'tm-ocr-extract': clerkMode }"
       >
-        {{ uploading ? 'Uploading…' : disabled ? 'Working…' : 'Send' }}
+        {{ uploading ? 'Uploading…' : disabled ? 'Working…' : (sendLabel || 'Send') }}
       </button>
       <button
         v-else
@@ -90,9 +96,8 @@
     </div>
 
     <div class="mt-1.5 flex items-center justify-between">
-      <span class="text-[11px] text-gray-400">
-        Enter (or ⌘/Ctrl+Enter) to send · Shift+Enter for newline · drag
-        &amp; drop files anywhere in this box
+      <span class="text-[11px] text-gray-400" :class="{ 'tm-ocr-hint': clerkMode }">
+        {{ clerkMode ? 'PDF, JPG or PNG · Extract creates a draft invoice' : 'Enter (or ⌘/Ctrl+Enter) to send · Shift+Enter for newline · drag & drop files anywhere in this box' }}
       </span>
       <span
         v-if="uploading"
@@ -126,6 +131,9 @@ const props = defineProps({
     type: String,
     default: 'Ask something or attach a document…',
   },
+  extractPrompt: { type: String, default: '' },
+  sendLabel: { type: String, default: '' },
+  clerkMode: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['send', 'cancel'])
@@ -253,8 +261,12 @@ function remove(idx) {
 
 function onSubmit() {
   if (!canSubmit.value) return
+  let content = draft.value.trim()
+  if (!content && pending.value.length && props.extractPrompt) {
+    content = props.extractPrompt
+  }
   const payload = {
-    content: draft.value.trim(),
+    content,
     attachments: [...pending.value],
   }
   draft.value = ''

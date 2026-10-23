@@ -20,19 +20,83 @@
   "applied_to_fewshot"
  ],
  "fields": [
-  {"fieldname": "user", "fieldtype": "Link", "label": "User", "options": "User", "reqd": 1, "in_list_view": 1},
-  {"fieldname": "target_doctype", "fieldtype": "Link", "label": "Target DocType", "options": "DocType", "reqd": 1, "in_list_view": 1},
-  {"fieldname": "fieldname", "fieldtype": "Data", "label": "Fieldname", "reqd": 1, "in_list_view": 1},
-  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
-  {"fieldname": "extracted_value", "fieldtype": "Long Text", "label": "Extracted Value"},
-  {"fieldname": "corrected_value", "fieldtype": "Long Text", "label": "Corrected Value", "reqd": 1},
-  {"fieldname": "source_section", "fieldtype": "Section Break", "label": "Source"},
-  {"fieldname": "source_file_url", "fieldtype": "Data", "label": "Source File URL"},
-  {"fieldname": "source_text_snippet", "fieldtype": "Long Text", "label": "Source Text Snippet"},
-  {"fieldname": "supplier_or_customer", "fieldtype": "Data", "label": "Supplier / Customer"},
-  {"fieldname": "template_used", "fieldtype": "Link", "label": "Template Used", "options": "IDP Extraction Template"},
-  {"fieldname": "origin", "fieldtype": "Select", "label": "Origin", "options": "rule\nllm\ntemplate\nmanual", "default": "rule"},
-  {"fieldname": "applied_to_fewshot", "fieldtype": "Check", "label": "Used in Few-Shot Prompt", "default": 0}
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "label": "Target DocType",
+   "options": "DocType",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "fieldname",
+   "fieldtype": "Data",
+   "label": "Fieldname",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "extracted_value",
+   "fieldtype": "Long Text",
+   "label": "Extracted Value"
+  },
+  {
+   "fieldname": "corrected_value",
+   "fieldtype": "Long Text",
+   "label": "Corrected Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_section",
+   "fieldtype": "Section Break",
+   "label": "Source"
+  },
+  {
+   "fieldname": "source_file_url",
+   "fieldtype": "Data",
+   "label": "Source File URL"
+  },
+  {
+   "fieldname": "source_text_snippet",
+   "fieldtype": "Long Text",
+   "label": "Source Text Snippet"
+  },
+  {
+   "fieldname": "supplier_or_customer",
+   "fieldtype": "Data",
+   "label": "Supplier / Customer"
+  },
+  {
+   "fieldname": "template_used",
+   "fieldtype": "Link",
+   "label": "Template Used",
+   "options": "IDP Extraction Template"
+  },
+  {
+   "fieldname": "origin",
+   "fieldtype": "Select",
+   "label": "Origin",
+   "options": "rule\nllm\ntemplate\nmanual",
+   "default": "rule"
+  },
+  {
+   "fieldname": "applied_to_fewshot",
+   "fieldtype": "Check",
+   "label": "Used in Few-Shot Prompt",
+   "default": 0
+  }
  ],
  "index_web_pages_for_search": 0,
  "links": [],
@@ -42,8 +106,41 @@
  "name": "IDP Extraction Correction",
  "owner": "Administrator",
  "permissions": [
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
-  {"create": 1, "email": 1, "print": 1, "read": 1, "report": 1, "role": "IDP User", "share": 1, "write": 1}
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "IDP Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "IDP User",
+   "share": 0,
+   "write": 0,
+   "if_owner": 1
+  }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",

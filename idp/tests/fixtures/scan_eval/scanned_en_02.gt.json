@@ -1,0 +1,18 @@
+{
+  "id": "scanned_en_02",
+  "category": "scanned",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "EMIRATES HARDWARE",
+    "supplier_trn": "100222233334444",
+    "bill_no": "EH-3310",
+    "bill_date": "2026-04-11",
+    "currency": "AED",
+    "net_total": 1200.0,
+    "tax_total": 60.0,
+    "grand_total": 1260.0
+  },
+  "ocr_text": "TAX INVOICE\nEMIRATES HARDWARE\nTRN: 100222233334444\nInvoice No: EH-3310\nDate: 2026-04-11\nCurrency: AED\nNet: 1200.00\nVAT 5%: 60.00\nGrand Total: 1260.00\nItem: Services / Goods  Qty:1",
+  "file": "scanned_en_02.png"
+}

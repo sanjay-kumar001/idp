@@ -19,20 +19,22 @@
         class="flex items-center"
         :class="collapsed ? 'justify-center p-2' : 'justify-between gap-2 px-3 py-2'"
       >
-        <!-- Left: app icon (served by Frappe from idp/public/images/
-             at ``/assets/idp/images/app-icon.png``).  Bound with ``:src``
-             so Rollup leaves the absolute path alone at build time. -->
-        <img
-          v-if="!collapsed"
-          :src="appIcon"
-          alt="IDP"
-          class="h-7 w-7 rounded"
-        />
+        <div v-if="!collapsed" class="tm-ocr-brand min-w-0 flex-1">
+          <img
+            class="tm-ocr-mark"
+            :src="brandMark"
+            alt=""
+          />
+          <div class="min-w-0">
+            <div class="tm-ocr-title">Invoice OCR</div>
+            <div class="tm-ocr-sub">Bills to draft invoices</div>
+          </div>
+        </div>
 
         <!-- Right: settings + collapse -->
         <div class="flex items-center gap-1">
           <button
-            v-if="!collapsed"
+            v-if="!collapsed && showSettings"
             type="button"
             class="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800"
             title="Chatbot Settings"
@@ -93,12 +95,12 @@
       <div v-if="!collapsed" class="px-3 pb-3 pt-1">
         <button
           type="button"
-          class="flex w-full items-center justify-center gap-1 rounded border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-100 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+          class="tm-ocr-scan"
           :disabled="starting"
           @click="$emit('new')"
         >
-          <span aria-hidden="true" class="text-base leading-none">+</span>
-          <span>{{ starting ? 'Starting…' : 'New Chat' }}</span>
+          <span aria-hidden="true">+</span>
+          <span>{{ starting ? 'Starting…' : (clerkMode ? 'Scan a bill' : 'New Chat') }}</span>
         </button>
       </div>
     </header>
@@ -107,10 +109,10 @@
     <template v-if="collapsed">
       <button
         type="button"
-        class="m-2 rounded bg-blue-600 px-1 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        class="tm-ocr-scan m-2 px-1 py-1 text-xs"
         :disabled="starting"
-        title="New conversation"
-        aria-label="New conversation"
+        title="Scan a bill"
+        aria-label="Scan a bill"
         @click="$emit('new')"
       >
         <span aria-hidden="true">+</span>
@@ -121,7 +123,10 @@
       <!-- ============================================================ -->
       <!-- Status pills (Active / Archived)                              -->
       <!-- ============================================================ -->
-      <div class="flex items-center gap-2 border-b border-gray-200 px-3 py-2 text-xs dark:border-gray-700">
+      <div
+        v-if="!clerkMode"
+        class="flex items-center gap-2 border-b border-gray-200 px-3 py-2 text-xs dark:border-gray-700"
+      >
         <button
           v-for="opt in statusOptions"
           :key="opt.value"
@@ -212,18 +217,14 @@
           v-else-if="!sessions.length"
           class="p-4 text-center text-xs text-gray-500"
         >
-          {{ query ? 'No matches.' : 'No conversations yet. Start a new one.' }}
+          {{ query ? 'No matches.' : (clerkMode ? 'No scans yet.' : 'No conversations yet. Start a new one.') }}
         </div>
         <ul v-else class="divide-y divide-gray-100 dark:divide-gray-800">
           <li
             v-for="row in sessions"
             :key="row.name"
-            class="group relative cursor-pointer px-3 py-2 pr-8 hover:bg-blue-50 dark:hover:bg-gray-800"
-            :class="
-              row.name === activeId
-                ? 'bg-blue-100 dark:bg-blue-950'
-                : ''
-            "
+            class="tm-ocr-session group relative cursor-pointer px-3 py-2 pr-8"
+            :class="row.name === activeId ? 'is-active' : ''"
             @click="$emit('select', row.name)"
           >
             <div class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -234,7 +235,7 @@
               <span v-if="row.message_count">{{ row.message_count }} msg</span>
             </div>
             <div
-              v-if="row.target_doctype || row.llm_model"
+              v-if="!clerkMode && (row.target_doctype || row.llm_model)"
               class="mt-0.5 flex items-center gap-1 text-[10px] text-gray-400"
             >
               <span v-if="row.target_doctype">{{ row.target_doctype }}</span>
@@ -268,6 +269,7 @@
         </ul>
       </div>
     </template>
+    <a v-if="!collapsed" class="tm-ocr-desk" href="/desk/home">← TaxMate Desk</a>
   </aside>
 </template>
 
@@ -283,6 +285,8 @@ const props = defineProps({
   collapsed: { type: Boolean, default: false },
   searchEnabled: { type: Boolean, default: true },
   deleteEnabled: { type: Boolean, default: true },
+  showSettings: { type: Boolean, default: true },
+  clerkMode: { type: Boolean, default: false },
 })
 
 const emit = defineEmits([
@@ -295,10 +299,7 @@ const emit = defineEmits([
   'settings',
 ])
 
-// App-icon URL served by Frappe from ``idp/public/images/``.  Kept as a
-// runtime string so Rollup doesn't try to resolve the absolute path at
-// build time.
-const appIcon = '/assets/idp/images/app-icon.png'
+const brandMark = '/assets/ascra_theme_2/images/taxmate-mark.svg'
 
 const statusOptions = [
   { value: 'Active', label: 'Active' },

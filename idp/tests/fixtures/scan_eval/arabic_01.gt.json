@@ -1,0 +1,18 @@
+{
+  "id": "arabic_01",
+  "category": "arabic",
+  "target_doctype": "Purchase Invoice",
+  "language": "ar",
+  "header": {
+    "supplier_name": "شركة النخيل للتجارة",
+    "supplier_trn": "100343434343434",
+    "bill_no": "NKH-12",
+    "bill_date": "2026-05-15",
+    "currency": "AED",
+    "net_total": 200.0,
+    "tax_total": 10.0,
+    "grand_total": 210.0
+  },
+  "ocr_text": "TAX INVOICE\nشركة النخيل للتجارة\nTRN: 100343434343434\nInvoice No: NKH-12\nDate: 2026-05-15\nCurrency: AED\nNet: 200.00\nVAT 5%: 10.00\nGrand Total: 210.00\nItem: Services / Goods  Qty:1",
+  "file": "arabic_01.png"
+}

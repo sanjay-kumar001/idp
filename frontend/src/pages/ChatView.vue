@@ -2,7 +2,7 @@
 <!-- For license information, please see license.txt -->
 
 <template>
-	<div class="idp-chat-shell flex h-screen w-full overflow-hidden bg-gray-100 dark:bg-gray-950">
+	<div class="idp-chat-shell tm-ocr flex h-screen w-full overflow-hidden bg-gray-100 dark:bg-gray-950">
 		<!-- Phase 33 — Skip link.  Anchors to the message region so a
          keyboard / screen-reader user can bypass the sidebar nav.  The
          link is visually hidden until focused, but always in the tab
@@ -30,6 +30,8 @@
 			:collapsed="sidebarCollapsed"
 			:search-enabled="sidebarSearchEnabled"
 			:delete-enabled="conversationDeleteEnabled"
+			:show-settings="isManager"
+			:clerk-mode="clerkMode"
 			@select="onSelectMobileClose"
 			@new="startNewConversation"
 			@status-change="onStatusChange"
@@ -69,35 +71,28 @@
 				v-if="!store.currentId"
 				class="flex flex-1 items-center justify-center bg-gray-50 p-6 text-sm text-gray-500 dark:bg-gray-950"
 			>
-				<div class="max-w-md text-center">
-					<!-- Avatar — user's Frappe image if present, otherwise a grey
-               circle with the user's initial (AI Chatbot style). -->
-					<div
-						class="mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-3xl font-semibold text-gray-700 shadow-sm dark:bg-gray-700 dark:text-gray-200"
-					>
-						<img
-							v-if="userImage"
-							:src="userImage"
-							:alt="userFullname"
-							class="h-full w-full object-cover"
-						/>
-						<span v-else aria-hidden="true">{{ userInitial }}</span>
+				<div class="max-w-md text-center tm-ocr-welcome">
+					<div class="tm-ocr-empty-icon">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+							<path d="M14 2v6h6" />
+							<path d="M8 13h8" />
+							<path d="M8 17h5" />
+						</svg>
 					</div>
-					<div class="text-3xl font-semibold text-gray-800 dark:text-gray-100">
-						Hello, {{ userFullname }}!
-					</div>
-					<div class="mt-2 text-base text-gray-500 dark:text-gray-400">
-						How can I help you today?
-					</div>
+					<h1>Invoice OCR</h1>
+					<p>
+						{{ clerkMode ? "Drop a supplier PDF or photo to create a draft Purchase Invoice." : "How can I help you today?" }}
+					</p>
 					<button
-						class="mt-6 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+						class="tm-ocr-scan mt-6"
 						:disabled="startingConversation"
 						@click="startNewConversation"
 					>
-						{{ startingConversation ? "Starting…" : "Start a new conversation" }}
+						{{ startingConversation ? "Starting…" : clerkMode ? "Scan a bill" : "Start a new conversation" }}
 					</button>
 					<div class="mt-3 text-xs text-gray-400">
-						Or pick an existing one from the sidebar.
+						{{ clerkMode ? "Or open a recent scan from the sidebar." : "Or pick an existing one from the sidebar." }}
 					</div>
 				</div>
 			</div>
@@ -114,31 +109,35 @@
 			>
 				<div
 					v-if="!store.visibleMessages.length && !store.agentState.running"
-					class="mx-auto max-w-md rounded-lg border border-dashed border-gray-300 bg-white p-4 text-center text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900"
+					class="tm-ocr-empty"
 				>
-					<div class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-						New conversation ready
+					<div class="tm-ocr-empty-icon">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+							<path d="M14 2v6h6" />
+							<path d="M12 18v-6" />
+							<path d="M9 15h6" />
+						</svg>
 					</div>
-					<div>
+					<h2>{{ clerkMode ? "Scan a supplier bill" : "New conversation ready" }}</h2>
+					<p>
+						<template v-if="clerkMode">
+							Attach a PDF or photo below, then click Extract. Review the card and create a draft Purchase Invoice.
+						</template>
+						<template v-else>
 						Drop a document into the box below or type a question — for example,
 						<em>“extract data and create a Purchase Invoice from this PDF.”</em>
-					</div>
-
-					<!-- Phase 31 G14 — suggested prompt chips. -->
-					<div
-						v-if="suggestedPromptChips.length"
-						class="mt-3 flex flex-wrap justify-center gap-1.5"
+						</template>
+					</p>
+					<button
+						v-for="(p, i) in suggestedPromptChips"
+						:key="i"
+						type="button"
+						class="tm-ocr-chip"
+						@click="onPickSuggested(p)"
 					>
-						<button
-							v-for="(p, i) in suggestedPromptChips"
-							:key="i"
-							type="button"
-							class="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] text-blue-800 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200 dark:hover:bg-blue-900"
-							@click="onPickSuggested(p)"
-						>
-							{{ p }}
-						</button>
-					</div>
+						{{ chipLabel(p) }}
+					</button>
 				</div>
 
 				<MessageBubble
@@ -208,6 +207,10 @@
 				:disabled="store.agentState.running"
 				:cancellable="store.agentState.running"
 				:cancelling="cancelling"
+				:placeholder="clerkMode ? 'Attach the bill, then click Extract…' : undefined"
+				:extract-prompt="extractPrompt"
+				:send-label="clerkMode ? 'Extract' : undefined"
+				:clerk-mode="clerkMode"
 				@send="onSend"
 				@cancel="onCancel"
 			/>
@@ -296,6 +299,7 @@ import { useCost } from "@/composables/useCost";
 import { useSuggestedPrompts } from "@/composables/useSuggestedPrompts";
 import { confirm } from "@/composables/useConfirm";
 import { cancelTurn } from "@/utils/api";
+import "@/assets/taxmate-ocr.css";
 
 const store = useConversationStore();
 const route = useRoute();
@@ -351,11 +355,52 @@ function flag(key, fallback = true) {
 	return !!Number(v);
 }
 
-const sidebarSearchEnabled = computed(() => flag("enable_sidebar_search"));
+const clerkMode = computed(() => settings.value?.clerk_mode !== false);
+const isManager = computed(() => !!settings.value?.is_manager);
+const extractPrompt = computed(
+	() => settings.value?.extract_prompt || "Extract this supplier bill into a draft Purchase Invoice.",
+);
+
+const sidebarSearchEnabled = computed(() => (clerkMode.value ? false : flag("enable_sidebar_search")));
 const conversationDeleteEnabled = computed(() => flag("enable_conversation_delete"));
-const costFooterEnabled = computed(() => flag("enable_cost_footer"));
+const costFooterEnabled = computed(() => (clerkMode.value ? false : flag("enable_cost_footer")));
+
+function chipLabel(p) {
+	if (p && typeof p === "object") {
+		return p.description || p.text || "Extract this bill";
+	}
+	const s = String(p || "").trim();
+	if (s.startsWith("{")) {
+		try {
+			const o = JSON.parse(s);
+			return o.description || o.text || s;
+		} catch (_) {
+			return s;
+		}
+	}
+	return s;
+}
+
+function chipText(p) {
+	if (p && typeof p === "object") {
+		return p.text || p.description || "";
+	}
+	const s = String(p || "").trim();
+	if (s.startsWith("{")) {
+		try {
+			const o = JSON.parse(s);
+			return o.text || o.description || s;
+		} catch (_) {
+			return s;
+		}
+	}
+	return s;
+}
 
 const suggestedPromptChips = computed(() => {
+	if (clerkMode.value) {
+		return [{ text: extractPrompt.value, description: "Extract this bill" }];
+	}
 	if (!flag("enable_suggested_prompts")) return [];
 	const list = suggestedPrompts.value;
 	return Array.isArray(list) ? list.slice(0, 6) : [];
@@ -630,7 +675,8 @@ async function onDeleteConversation(row) {
 // the composer.  ChatInput exposes a custom event API, so we instead
 // dispatch a window-level event that the input listens for; this keeps
 // the chip free of tight coupling to ChatInput's internals.
-function onPickSuggested(text) {
+function onPickSuggested(prompt) {
+	const text = chipText(prompt);
 	if (!text) return;
 	window.dispatchEvent(new CustomEvent("idp:chat-input:prefill", { detail: { text } }));
 }
@@ -764,6 +810,7 @@ onMounted(async () => {
 	// computeds resolve before the sidebar renders.
 	try {
 		await loadSettings();
+		document.title = "Invoice OCR";
 	} catch (_) {
 		// Non-fatal — gated UI falls back to its built-in defaults.
 	}

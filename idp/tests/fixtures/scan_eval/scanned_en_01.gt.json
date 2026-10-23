@@ -1,0 +1,18 @@
+{
+  "id": "scanned_en_01",
+  "category": "scanned",
+  "target_doctype": "Purchase Invoice",
+  "language": "en",
+  "header": {
+    "supplier_name": "AL NOOR TRADING CO",
+    "supplier_trn": "100555566667777",
+    "bill_no": "AN-90012",
+    "bill_date": "2026-02-01",
+    "currency": "AED",
+    "net_total": 500.0,
+    "tax_total": 25.0,
+    "grand_total": 525.0
+  },
+  "ocr_text": "TAX INVOICE\nAL NOOR TRADING CO\nTRN: 100555566667777\nInvoice No: AN-90012\nDate: 2026-02-01\nCurrency: AED\nNet: 500.00\nVAT 5%: 25.00\nGrand Total: 525.00\nItem: Services / Goods  Qty:1",
+  "file": "scanned_en_01.png"
+}

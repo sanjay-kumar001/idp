@@ -6,3 +6,5 @@
 # Patches added in this section will be executed after doctypes are migrated
 idp.patches.v2_1_x.tools_consolidation
 idp.patches.v2_2_x.seed_lifecycle_tool_config
+idp.patches.v2_3_x.add_idp_manager_role
+idp.patches.v2_3_x.backfill_scan_status_and_company

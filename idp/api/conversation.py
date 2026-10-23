@@ -1670,59 +1670,20 @@ def list_agent_tools() -> list[dict]:
 
 @frappe.whitelist()
 def search_items(query: str, top_n: int = 10) -> list[dict]:
-	"""Phase 24 — interactive Item search for the mapping table.
-
-	The user can pick an alternate ``ERPNext Item`` for any row whose
-	auto-match landed on ``status = "New"``.  This endpoint surfaces
-	the full :func:`match_single_item` candidate list so the UI can
-	render a search dropdown without round-tripping the LLM.
-	"""
-
+	"""Phase 24 — interactive Item search for the mapping table."""
 	_require_login()
-	query = (query or "").strip()
-	if not query:
-		return []
-	try:
-		top_n = max(1, min(int(top_n or 10), 50))
-	except (TypeError, ValueError):
-		top_n = 10
+	from idp.api.conversation_search import search_item_candidates
 
-	from idp.mappers.item_matcher import match_single_item
-
-	# Use a deliberately low floor so even partial substrings show up
-	# in the search dropdown — the UI sorts and filters from there.
-	result = match_single_item(
-		{"item_code": query, "item_name": query},
-		match_threshold=0.99,  # ensures status stays "New" for ranking
-		floor_threshold=0.3,
-		top_n=top_n,
-	)
-	return [c.to_dict() for c in result.matches]
+	return search_item_candidates(query, top_n)
 
 
 @frappe.whitelist()
 def search_accounts(query: str, company: str | None = None, top_n: int = 10) -> list[dict]:
 	"""Phase 24 — interactive Account search for the tax mapping table."""
-
 	_require_login()
-	query = (query or "").strip()
-	if not query:
-		return []
-	try:
-		top_n = max(1, min(int(top_n or 10), 50))
-	except (TypeError, ValueError):
-		top_n = 10
+	from idp.api.conversation_search import search_account_candidates
 
-	from idp.mappers.tax_matcher import match_single_tax
-
-	result = match_single_tax(
-		{"account": query},
-		company=company,
-		match_threshold=0.99,
-		floor_threshold=0.3,
-		top_n=top_n,
-	)
-	return [c.to_dict() for c in result.matches]
+	return search_account_candidates(query, company, top_n)
 
 
 @frappe.whitelist()
@@ -1824,6 +1785,7 @@ def remap_card_row(
 	# Persist the mutated card payload.
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {
@@ -1932,6 +1894,7 @@ def create_item_from_row(
 	target_row["confidence"] = 1.0
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {
@@ -2065,6 +2028,7 @@ def bulk_match_items(
 	# Persist the updated card.
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {
@@ -2136,6 +2100,7 @@ def apply_to_all_rows(
 
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {
@@ -2210,6 +2175,7 @@ def bulk_accept_suggestions(
 
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {
@@ -2721,6 +2687,7 @@ def re_extract_field(
 
 	message.rendered_card_payload = json.dumps(card)
 	message.save(ignore_permissions=False)
+	# Chat card edits: flush so the next poll/realtime sees the card.
 	frappe.db.commit()
 
 	return {

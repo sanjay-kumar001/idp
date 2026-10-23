@@ -14,6 +14,7 @@
   "target_doctype",
   "company",
   "user",
+  "idempotency_key",
   "status_section",
   "status",
   "processing_time_ms",
@@ -25,6 +26,7 @@
   "created_document",
   "data_section",
   "extraction_data",
+  "scan_fields",
   "validation_errors",
   "error_message",
   "llm_section",
@@ -41,7 +43,18 @@
   "column_break_te",
   "attachment_text_chars_total",
   "vision_calls_in_request",
-  "mapper_cache_state"
+  "mapper_cache_state",
+  "scan_section",
+  "file_sha256",
+  "pipeline_version",
+  "ocr_engine",
+  "column_break_scan",
+  "path_taken",
+  "error_key",
+  "cancel_requested",
+  "ocr_text",
+  "field_confidence_json",
+  "stage_timings_json"
  ],
  "fields": [
   {
@@ -96,12 +109,12 @@
    "label": "Status"
   },
   {
-   "default": "Uploaded",
+   "default": "Queued",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Uploaded\nExtracting\nExtracted\nCreating\nCreated\nUpdated\nDeleted\nFailed"
+   "options": "Queued\nReading\nReview\nSaving\nSaved\nFailed\nCancelled\nUploaded\nExtracting\nExtracted\nCreating\nCreated\nUpdated\nDeleted\nReady"
   },
   {
    "fieldname": "processing_time_ms",
@@ -245,6 +258,67 @@
    "options": "\nhit\nmiss\nbypass"
   },
   {
+   "collapsible": 1,
+   "fieldname": "scan_section",
+   "fieldtype": "Section Break",
+   "label": "Scan"
+  },
+  {
+   "fieldname": "file_sha256",
+   "fieldtype": "Data",
+   "label": "File SHA256",
+   "length": 64,
+   "search_index": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "pipeline_version",
+   "fieldtype": "Int",
+   "label": "Pipeline Version",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "ocr_engine",
+   "fieldtype": "Data",
+   "label": "OCR Engine"
+  },
+  {
+   "fieldname": "column_break_scan",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "path_taken",
+   "fieldtype": "Select",
+   "label": "Path Taken",
+   "options": "\nrule\nllm\nhybrid\nvision"
+  },
+  {
+   "fieldname": "error_key",
+   "fieldtype": "Data",
+   "label": "Error Key"
+  },
+  {
+   "default": "0",
+   "fieldname": "cancel_requested",
+   "fieldtype": "Check",
+   "label": "Cancel Requested"
+  },
+  {
+   "fieldname": "ocr_text",
+   "fieldtype": "Long Text",
+   "label": "OCR Text"
+  },
+  {
+   "fieldname": "field_confidence_json",
+   "fieldtype": "JSON",
+   "label": "Field Confidence JSON"
+  },
+  {
+   "fieldname": "stage_timings_json",
+   "fieldtype": "JSON",
+   "label": "Stage Timings JSON"
+  },
+  {
    "fieldname": "column_break_te",
    "fieldtype": "Column Break"
   },
@@ -263,6 +337,18 @@
    "fieldname": "token_section",
    "fieldtype": "Section Break",
    "label": "Token Efficiency Metrics"
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Idempotency Key",
+   "search_index": 1
+  },
+  {
+   "fieldname": "scan_fields",
+   "fieldtype": "Table",
+   "label": "Scan Fields",
+   "options": "IDP Scan Field"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -294,7 +380,8 @@
    "report": 1,
    "role": "IDP User",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "if_owner": 1
   }
  ],
  "row_format": "Dynamic",
